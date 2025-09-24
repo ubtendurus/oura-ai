@@ -9,3 +9,4 @@ var/tokens.json
 .idea/
 .vscode/
 *.log
+docker-compose.yml

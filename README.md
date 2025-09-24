@@ -67,6 +67,15 @@ docker run --rm -p 8000:8000 --env-file .env oura-daily-coach
 
 The container entrypoint launches Uvicorn with the FastAPI app listening on port `8000`.
 
+## Run with Docker Compose
+<!-- The provided `docker-compose.yml` defaults to the image published on GHCR. Update the `image` tag or uncomment the `build` block to use a local build. -->
+
+```bash
+docker compose up -d
+```
+
+Change the `ports` mapping (e.g. `9000:8000`) if you need a different host port or set extra env vars in `.env`.
+
 ## Publish to GitHub Container Registry
 A GitHub Actions workflow is included to build and push the image whenever you tag a release.
 
