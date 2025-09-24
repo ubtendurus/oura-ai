@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oura Daily Coach</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+    <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  </head>
+  <body>
+    <main class="container">
+      <header class="page-header">
+        <div>
+          <h1>Oura Daily Coach</h1>
+          {% if date_iso %}
+          <p class="subtitle">
+            Report for {{ date_iso }}
+            {% if requested_date_iso and requested_date_iso != date_iso %}
+            <span class="subtitle-note">(Requested {{ requested_date_iso }})</span>
+            {% endif %}
+            {% if timezone %}
+            <span class="subtitle-note">{{ timezone }}</span>
+            {% endif %}
+          </p>
+          {% endif %}
+        </div>
+        <div class="header-actions">
+          <form method="post" action="/logout">
+            <button type="submit" class="secondary-btn">Log out</button>
+          </form>
+          {% if oauth.enabled %}
+          <div class="actions-group">
+            {% if oauth.connected %}
+            <form method="post" action="{{ oauth.disconnect_url }}">
+              <button type="submit" class="secondary-btn">Disconnect Oura</button>
+            </form>
+            {% else %}
+            <a class="secondary-btn" href="{{ oauth.login_url }}">Connect Oura</a>
+            {% endif %}
+          </div>
+          {% endif %}
+          <button
+            class="refresh-btn"
+            hx-post="/refresh"
+            hx-target="#message-panel"
+            hx-swap="innerHTML"
+          >
+            Refresh
+          </button>
+        </div>
+      </header>
+
+      {% if summary %}
+      <section class="metrics-grid">
+        <article class="metric-card">
+          <span class="metric-label">Readiness</span>
+          <span class="metric-value">{{ summary.readiness_score or '' }}</span>
+          <span class="metric-detail">Tuned to how prepared you are today.</span>
+        </article>
+        <article class="metric-card metric-card--sleep">
+          <span class="metric-label">Sleep</span>
+          <span class="metric-value">{{ summary.sleep_score or '' }}</span>
+          <span class="metric-detail">
+            {% if summary.sleep_duration_hours %}
+            {{ summary.sleep_duration_hours }} hrs logged
+            {% else %}
+            Rest indicator from last night
+            {% endif %}
+          </span>
+        </article>
+        <article class="metric-card metric-card--activity">
+          <span class="metric-label">Activity</span>
+          <span class="metric-value">{{ summary.activity_score or '' }}</span>
+          <span class="metric-detail">
+            {% if summary.steps %}
+            {{ summary.steps }} steps so far
+            {% else %}
+            Stay moving with gentle momentum
+            {% endif %}
+          </span>
+        </article>
+      </section>
+      {% endif %}
+
+      <section id="message-panel" class="message-card">
+        {% include "partials/message.html" %}
+      </section>
+    </main>
+    <script>
+      (function () {
+        if (!window.Intl || !window.Intl.DateTimeFormat) return;
+        var tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        if (!tz) return;
+        var url = new URL(window.location.href);
+        var current = url.searchParams.get('tz');
+        if (tz !== current) {
+          url.searchParams.set('tz', tz);
+          window.location.replace(url.toString());
+          return;
+        }
+        document.addEventListener('htmx:configRequest', function (evt) {
+          evt.detail.headers['X-Timezone'] = tz;
+        });
+      })();
+    </script>
+  </body>
+</html>

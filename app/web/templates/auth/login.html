@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Oura Daily Coach â Sign In</title>
+    <link rel="stylesheet" href="/static/styles.css" />
+  </head>
+  <body class="auth-body">
+    <main class="auth-container">
+      <section class="auth-card">
+        <h1 class="auth-title">Oura Daily Coach</h1>
+        <p class="auth-subtitle">Sign in to view your daily metrics and guidance.</p>
+        {% if error %}
+        <div class="auth-error">{{ error }}</div>
+        {% endif %}
+        <form method="post" class="auth-form">
+          <input type="hidden" name="next" value="{{ next }}" />
+          <label class="auth-field">
+            <span>Username</span>
+            <input type="text" name="username" autocomplete="username" required />
+          </label>
+          <label class="auth-field">
+            <span>Password</span>
+            <input type="password" name="password" autocomplete="current-password" required />
+          </label>
+          <button type="submit" class="auth-submit">Sign In</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,32 @@
+<div class="message-block">
+  {% if oauth.enabled and oauth_prompt %}
+  <div class="card card--info">
+    <h2>Connect your Oura account</h2>
+    <p>Authorise access to your Oura data so we can craft your daily coaching message.</p>
+    <a class="secondary-btn" href="{{ oauth.login_url }}">Connect Oura</a>
+  </div>
+  {% endif %}
+
+  {% if requested_date_iso and requested_date_iso != date_iso %}
+  <div class="card card--info info-note">
+    <p>Requested {{ requested_date_iso }} but showing the most recent available data from {{ date_iso }}.</p>
+  </div>
+  {% endif %}
+
+  {% if error and not (oauth.enabled and oauth_prompt) %}
+  <div class="card card--error">
+    <h2>Something went wrong</h2>
+    <p>{{ error }}</p>
+  </div>
+  {% elif message %}
+  <div class="card card--message">
+    <h2>Momentum Briefing</h2>
+    <div class="message-text">{{ message | safe }}</div>
+  </div>
+  {% else %}
+  <div class="card card--empty">
+    <h2>No Message Available</h2>
+    <p>We could not render a message for this date yet.</p>
+  </div>
+  {% endif %}
+</div>
