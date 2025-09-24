@@ -76,7 +76,7 @@ A GitHub Actions workflow is included to build and push the image whenever you t
 
 To pull the image from another host/container:
 ```bash
-docker pull ghcr.io/<owner>/<repo>:v1.0.0
+docker pull ghcr.io/ubtendurus/oura-ai:latest
 ```
 
 Authenticate with `ghcr.io` first if the repository is private:
